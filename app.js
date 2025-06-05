@@ -1,24 +1,38 @@
-const express = require('express')
-const app = express()
-const mongoose = require('mongoose')
+const express = require("express");
+const app = express();
+const mongoose = require("mongoose");
+const cors = require("cors");
 require("dotenv").config();
 
 const PORT = process.env.PORT || 5000;
 const MONGOURI = process.env.MONGOURI;
 
-mongoose.set('strictQuery', true);
-mongoose.connect(MONGOURI)
-mongoose.connection.on('connected',()=>{
-    console.log("connected to mongo successfully");
-})
-mongoose.connection.on('error',(err)=>{
-    console.log("error during connection",err);
-})
+// Configure CORS
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "your-production-domain.com"
+        : "http://localhost:3000",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
-require('./models/user')
-require('./models/post')
+mongoose.set("strictQuery", true);
+mongoose.connect(MONGOURI);
+mongoose.connection.on("connected", () => {
+  console.log("connected to mongo successfully");
+});
+mongoose.connection.on("error", (err) => {
+  console.log("error during connection", err);
+});
 
-app.use(express.json())
+require("./models/user");
+require("./models/post");
+
+app.use(express.json());
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/posts", require("./routes/post"));
 app.use("/api/users", require("./routes/user"));
@@ -50,6 +64,6 @@ app.use("/api/users", require("./routes/user"));
 //     })
 // }
 
-app.listen(PORT,()=>{
-    console.log("connected",PORT);
-})
+app.listen(PORT, () => {
+  console.log("connected", PORT);
+});
