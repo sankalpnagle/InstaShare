@@ -19,10 +19,9 @@ require('./models/user')
 require('./models/post')
 
 app.use(express.json())
-app.use(require('./routes/auth'))
-app.use(require('./routes/post'))
-app.use(require('./routes/user'))
-
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/posts", require("./routes/post"));
+app.use("/api/users", require("./routes/user"));
 // const customMiddleware = (req,res,next)=>{
 //     console.log("midleware executed");
 //     next()
